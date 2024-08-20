@@ -22,7 +22,7 @@ Follow these steps to get your project up and running:
 1. **Create the Project**
 
    ```bash
-   npx degit fabien-ml/react-ts-vite-template my-app
+   npx degit herryhertrix/vite-react-ts-dndkit-template my-app
    ```
 
 2. **Navigate to the Project Directory**
