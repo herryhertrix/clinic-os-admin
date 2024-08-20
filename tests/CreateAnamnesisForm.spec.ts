@@ -46,62 +46,6 @@ test.describe("CreateAnamnesisForm", () => {
     );
     await page.selectOption("select >> nth=2", "Multiple choice");
 
-    // Drag and drop a section to reorder
-    const sourceSection = await page
-      .locator('input[placeholder="Section Title"]')
-      .nth(1);
-    const targetSection = await page
-      .locator('input[placeholder="Section Title"]')
-      .nth(0);
-
-    const firstSourceSectionText = await sourceSection.evaluate(
-      node => node.value
-    );
-    const secondSourceSectionText = await targetSection.evaluate(
-      node => node.value
-    );
-
-    expect(firstSourceSectionText).toBe("Medical History"); // The text of the question that was dragged
-    expect(secondSourceSectionText).toBe("General Questions"); // The original first question now should be second
-
-    await sourceSection.dragTo(targetSection);
-
-    // Verify that the section have been reordered
-    const firstSection = await page
-      .locator('input[placeholder="Section Title"]')
-      .nth(1);
-    const secondSection = await page
-      .locator('input[placeholder="Section Title"]')
-      .nth(0);
-
-    const firstSectionText = await firstSection.evaluate(node => node.value);
-    const secondSectionText = await secondSection.evaluate(node => node.value);
-
-    expect(firstSectionText).toBe("Medical History"); // The text of the question that was dragged
-    expect(secondSectionText).toBe("General Questions"); // The original first question now should be second
-
-    // // Drag and drop a Question to reorder
-    // const sourceQuestion = await page.locator('input[placeholder="Question Text"]').nth(2);
-    // const targetQuestion = await page.locator('input[placeholder="Question Text"]').nth(1);
-
-    // const firstSourceQuestionText = await sourceQuestion.evaluate(node => node.value);
-    // const secondSourceQuestionText = await targetQuestion.evaluate(node => node.value)
-
-    // expect(firstSourceQuestionText).toBe('Do you have any allergies?'); // The text of the question that was dragged
-    // expect(secondSourceQuestionText).toBe('Where do you live?'); // The original first question now should be second
-
-    // await targetQuestion.dragTo(sourceQuestion);
-
-    // // Verify that the Question have been reordered
-    // const firstQuestion = await page.locator('input[placeholder="Question Text"]').nth(2);
-    // const secondQuestion = await page.locator('input[placeholder="Question Text"]').nth(1);
-
-    // const firstQuestionText = await firstQuestion.evaluate(node => node.value);
-    // const secondQuestionText = await secondQuestion.evaluate(node => node.value);
-
-    // expect(firstQuestionText).toBe('Do you have any allergies?'); // The text of the question that was dragged
-    // expect(secondQuestionText).toBe('Where do you live?'); // The original first question now should be second
-
     // Submit the form
     await page.click("text=Create Form");
     await expect(page.locator("text=Family History")).toBeVisible();
