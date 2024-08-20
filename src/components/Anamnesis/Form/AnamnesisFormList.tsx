@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { debounce } from 'lodash';
 
-const AnamnesisFormList = ({ forms, handleIdChange, handleNextPage, handleDelete }: any) => {
+const AnamnesisFormList = ({ forms, setForms, handleIdChange, handleNextPage }: any) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [sortConfig, setSortConfig] = useState({ key: 'title', direction: 'asc' });
@@ -64,17 +64,22 @@ const AnamnesisFormList = ({ forms, handleIdChange, handleNextPage, handleDelete
                 handleNextPage(2)
                 break;
             case 'delete':
-                handleIdChange(null);
                 handleDelete(id)
-                handleNextPage(2)
                 break;
             default:
                 break;
         }
     };
 
+    const handleDelete = (id: number) => {
+        const updateForms = forms.filter((form: any) => form.id !== id);
+        setForms(updateForms)
+        setFilteredForms(updateForms)
+    }
+
     return (
         <div className="container mx-auto p-4">
+            <h1 className="text-3xl font-bold text-center my-4">List Anamnesis Forms</h1>
             <div className="flex justify-between items-center mb-4">
                 <button className="bg-blue-500 text-white rounded-lg px-3 py-1 flex items-center" onClick={() => handleNextPage(1)} >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="h-5 w-5 mr-1">
