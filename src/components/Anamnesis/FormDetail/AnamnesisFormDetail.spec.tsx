@@ -1,9 +1,10 @@
-import { render, fireEvent } from '@testing-library/react';
-import AnamnesisFormDetail from './AnamnesisFormDetail';
-import { DndContext } from '@dnd-kit/core';
-import mockForms from '../../../mockDatas/forms';
+import { DndContext } from "@dnd-kit/core";
+import { fireEvent, render } from "@testing-library/react";
 
-describe('AnamnesisFormDetail', () => {
+import mockForms from "../../../mockDatas/forms";
+import AnamnesisFormDetail from "./AnamnesisFormDetail";
+
+describe("AnamnesisFormDetail", () => {
   const forms = mockForms;
 
   const setup = () => {
@@ -12,7 +13,7 @@ describe('AnamnesisFormDetail', () => {
     const utils = render(
       <DndContext>
         <AnamnesisFormDetail
-          id="1"
+          id={1}
           forms={forms}
           setForms={setForms}
           handlePreviousPage={handlePreviousPage}
@@ -27,16 +28,16 @@ describe('AnamnesisFormDetail', () => {
     };
   };
 
-  it('renders the form details correctly', () => {
+  it("renders the form details correctly", () => {
     const { getByText } = setup();
-    expect(getByText('General Health')).toBeInTheDocument();
-    expect(getByText('General health questions')).toBeInTheDocument();
-    expect(getByText('Section 1')).toBeInTheDocument();
+    expect(getByText("General Health")).toBeInTheDocument();
+    expect(getByText("General health questions")).toBeInTheDocument();
+    expect(getByText("Section 1")).toBeInTheDocument();
   });
 
   it('calls handlePreviousPage when "Back" button is clicked', () => {
     const { getByText, handlePreviousPage } = setup();
-    const backButton = getByText('Back');
+    const backButton = getByText("Back");
     fireEvent.click(backButton);
     expect(handlePreviousPage).toHaveBeenCalled();
   });
