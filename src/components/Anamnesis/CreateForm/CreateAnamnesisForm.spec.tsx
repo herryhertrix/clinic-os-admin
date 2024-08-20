@@ -1,86 +1,81 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import CreateAnamnesisForm from './CreateAnamnesisForm';
 
-import CreateAnamnesisForm from "./CreateAnamnesisForm";
+describe('CreateAnamnesisForm', () => {
+  let mockForms: any[] = [];
+  const mockSetForms = jest.fn();
+  const mockHandlePreviousPage = jest.fn();
+  const mockHandleNextPage = jest.fn();
 
-describe("CreateAnamnesisForm", () => {
-  const setup = () => {
-    const forms: any = [];
-    const setForms = jest.fn();
-    const handlePreviousPage = jest.fn();
-    const handleNextPage = jest.fn();
-
+  beforeEach(() => {
     render(
       <CreateAnamnesisForm
-        forms={forms}
-        setForms={setForms}
-        handlePreviousPage={handlePreviousPage}
-        handleNextPage={handleNextPage}
+        forms={mockForms}
+        setForms={mockSetForms}
+        handlePreviousPage={mockHandlePreviousPage}
+        handleNextPage={mockHandleNextPage}
       />
     );
-
-    return {
-      forms,
-      setForms,
-      handlePreviousPage,
-      handleNextPage,
-    };
-  };
-
-  it("should render the title and description inputs", () => {
-    setup();
-    expect(screen.getByPlaceholderText("Title")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Description")).toBeInTheDocument();
   });
 
-  it('should add a new section when the "Add Section" button is clicked', () => {
-    setup();
-    const addButton = screen.getByText("Add Section");
-    fireEvent.click(addButton);
-    expect(screen.getByPlaceholderText("Section Title")).toBeInTheDocument();
-  });
-
-  it('should add a new question when the "Add Question" button is clicked', () => {
-    setup();
-    const sectionButton = screen.getByText("Add Section");
-    fireEvent.click(sectionButton);
-    const questionButton = screen.getByText("Add Question");
-    fireEvent.click(questionButton);
-    expect(screen.getByPlaceholderText("Question Text")).toBeInTheDocument();
-  });
-
-  it('should call handleNextPage and setForms when "Create Form" button is clicked', () => {
-    const { setForms, handleNextPage } = setup();
-    const createButton = screen.getByText("Create Form");
-    fireEvent.click(createButton);
-
-    expect(setForms).toHaveBeenCalled();
-    expect(handleNextPage).toHaveBeenCalledWith(0);
-  });
-
-  it("should update section title when input is changed", () => {
-    setup();
-    const sectionButton = screen.getByText("Add Section");
-    fireEvent.click(sectionButton);
-    const sectionTitleInput: any = screen.getByPlaceholderText("Section Title");
-    fireEvent.change(sectionTitleInput, {
-      target: { value: "New Section Title" },
+  it('renders the form and allows adding a section', () => {
+    fireEvent.change(screen.getByPlaceholderText('Title'), {
+      target: { value: 'New Anamnesis Form' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Description'), {
+      target: { value: 'This is a description' },
     });
 
-    expect(sectionTitleInput.value).toBe("New Section Title");
+    fireEvent.click(screen.getByText('Add Section'));
+    expect(screen.getByPlaceholderText('Section Title')).toBeInTheDocument();
   });
 
-  it("should update question text when input is changed", () => {
-    setup();
-    const sectionButton = screen.getByText("Add Section");
-    fireEvent.click(sectionButton);
-    const questionButton = screen.getByText("Add Question");
-    fireEvent.click(questionButton);
-    const questionTextInput: any = screen.getByPlaceholderText("Question Text");
-    fireEvent.change(questionTextInput, {
-      target: { value: "New Question Text" },
+  it('allows adding a question to a section', () => {
+    fireEvent.click(screen.getByText('Add Section'));
+    fireEvent.change(screen.getByPlaceholderText('Section Title'), {
+      target: { value: 'General Questions' },
     });
 
-    expect(questionTextInput.value).toBe("New Question Text");
+    fireEvent.click(screen.getByText('Add Question'));
+    expect(screen.getByPlaceholderText('Question Text')).toBeInTheDocument();
+  });
+
+  it('allows removing a section', () => {
+    fireEvent.click(screen.getByText('Add Section'));
+    expect(screen.getByPlaceholderText('Section Title')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByPlaceholderText('Remove Section'));
+    expect(screen.queryByPlaceholderText('Section Title')).not.toBeInTheDocument();
+  });
+
+  it('allows removing a question', () => {
+    fireEvent.click(screen.getByText('Add Section'));
+    fireEvent.click(screen.getByText('Add Question'));
+    expect(screen.getByPlaceholderText('Question Text')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByPlaceholderText('Remove Question'));
+    expect(screen.queryByPlaceholderText('Question Text')).not.toBeInTheDocument();
+  });
+
+  it('submits the form', () => {
+    fireEvent.change(screen.getByPlaceholderText('Title'), {
+      target: { value: 'New Anamnesis Form' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Description'), {
+      target: { value: 'This is a description' },
+    });
+
+    fireEvent.click(screen.getByText('Add Section'));
+    fireEvent.change(screen.getByPlaceholderText('Section Title'), {
+      target: { value: 'General Questions' },
+    });
+
+    fireEvent.click(screen.getByText('Create Form'));
+
+    expect(mockSetForms).toHaveBeenCalled();
+    expect(mockHandleNextPage).toHaveBeenCalledWith(0);
   });
 });
 

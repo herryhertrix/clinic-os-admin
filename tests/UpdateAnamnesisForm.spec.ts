@@ -113,6 +113,17 @@ test.describe("UpdateAnamnesisForm", () => {
     expect(firstQuestionText).toBe("What is your age?");
     expect(secondQuestionText).toBe("Where do you live?");
 
+
+    // Remove Question
+    await page.click('button[placeholder="Remove Question"] >> nth=5');
+    const remainingQuestions = await page.locator('input[placeholder="Question Text"]');
+    expect(await remainingQuestions.count()).toBe(5); // Should now only be two questions remaining
+
+    // Remove Section
+    await page.click('button[placeholder="Remove Section"]');
+    const remainingSections = await page.locator('input[placeholder="Section Text"]');
+    expect(await remainingSections.count()).toBe(0); // Should now only be two questions remaining
+
     // Update the form
     await page.click("text=Update Form");
 

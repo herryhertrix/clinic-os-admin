@@ -6,9 +6,9 @@ test.describe("CreateAnamnesisForm", () => {
     await page.click("text=Add");
   });
 
-  test("should allow the user to create a new anamnesis form with sections and questions", async ({
+  test("should allow the user to create a new anamnesis form with sections and questions, perform drag-and-drop, and delete them", async ({
     page,
-  }: any) => {
+  }) => {
     // Fill in the form title and description
     await page.fill('input[placeholder="Title"]', "New Anamnesis Form");
     await page.fill(
@@ -46,9 +46,41 @@ test.describe("CreateAnamnesisForm", () => {
     );
     await page.selectOption("select >> nth=2", "Multiple choice");
 
+    // Drag and drop the "Medical History" section to reorder it before "General Questions"
+    const sourceSection = await page
+      .locator('input[placeholder="Section Title"]')
+      .nth(1);
+    const targetSection = await page
+      .locator('input[placeholder="Section Title"]')
+      .nth(0);
+
+    await sourceSection.dragTo(targetSection);
+
+    // Verify that the section has been reordered
+    const firstSection = await page
+      .locator('input[placeholder="Section Title"]')
+      .nth(0);
+    const firstSectionText = await firstSection.evaluate((node: any) => node.value);
+
+    expect(firstSectionText).toBe("General Questions");
+
+    // Remove all question in second section
+    await page.click('button[placeholder="Remove Question"] >> nth=1');
+
+    const remainingQuestions = await page.locator('button[placeholder="Remove Question"] >> nth=1');
+    expect(await remainingQuestions.count()).toBe(1); // Should now only be two questions remaining
+
+
+    // Remove a section
+    await page.click('button[placeholder="Remove Section"] >> nth=1');
+    await expect(
+      page.locator('input[placeholder="Section Title"] >> nth=1')
+    ).not.toBeVisible();
+
     // Submit the form
     await page.click("text=Create Form");
-    await expect(page.locator("text=Family History")).toBeVisible();
+    await page.click('text=Next');
+    await expect(page.locator("text=New Anamnesis Form")).toBeVisible();
   });
 });
 

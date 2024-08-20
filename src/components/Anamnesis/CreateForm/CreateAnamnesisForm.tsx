@@ -172,6 +172,7 @@ const CreateAnamnesisForm: React.FC<CreateAnamnesisFormProps> = ({
                 <div className="flex justify-between items-center mb-2">
                   <button
                     className="text-red-500 ml-2"
+                    placeholder="Remove Section"
                     onClick={() => removeSection(section.id)}
                   >
                     <svg
@@ -230,6 +231,7 @@ const CreateAnamnesisForm: React.FC<CreateAnamnesisFormProps> = ({
                             />
                             <button
                               className="text-red-500 ml-2"
+                              placeholder="Remove Question"
                               onClick={() =>
                                 removeQuestion(section.id, question.id)
                               }
